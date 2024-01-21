@@ -1,0 +1,17 @@
+# Archive your static HTML project and save it with the build record.
+# Update Pool information as per the environment
+
+trigger:
+- master
+
+pool:
+  name: windowspool
+  demands:
+   - agent.name -equals windowsagent
+
+steps:
+- task: ArchiveFiles@2
+  inputs:
+    rootFolderOrFile: '$(build.sourcesDirectory)'
+    includeRootFolder: false
+- task: PublishBuildArtifacts@1

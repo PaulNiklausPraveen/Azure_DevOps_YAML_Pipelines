@@ -1,0 +1,33 @@
+trigger:
+- main
+
+name: Deploy Bicep files
+
+variables:
+  vmImageName: 'windowsagent'
+  azureServiceConnection:  'ADO-SPN-Connectios'
+  resourceGroupName: 'biceps'
+  location: 'North Europe'
+  templateFile: './main.bicep'
+  subscriptionId: '2c7c7d94-6c17-4aa8-ae17-b19ef00e2a53'
+
+pool:
+  name: windowspool
+  demands:
+   - agent.name -equals windowsagent
+
+steps:
+
+- task: AzureResourceManagerTemplateDeployment@3
+  inputs:
+    deploymentScope: 'Resource Group'
+    azureResourceManagerConnection:  '$(azureServiceConnection)'
+    subscriptionId: '$(subscriptionId)'
+    action: 'Create Or Update Resource Group'
+    resourceGroupName: '$(resourceGroupName)'
+    location: '$(location)'
+    csmFile: '$(templateFile)'
+    templateLocation: 'Linked artifact'
+    deploymentMode: 'Incremental'
+    deploymentName: 'DeployPipelineTemplate'
+    
